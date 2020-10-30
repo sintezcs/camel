@@ -17,7 +17,7 @@
 package org.apache.camel.component.aws.s3.client.impl;
 
 import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -72,7 +72,7 @@ public class S3ClientIAMOptimizedImpl implements S3Client {
         }
 
         if (!configuration.isUseEncryption()) {
-            clientBuilder = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false));
+            clientBuilder = AmazonS3ClientBuilder.standard().withCredentials(new DefaultAWSCredentialsProviderChain());
 
             if (configuration.hasProxyConfiguration()) {
                 clientBuilder = clientBuilder.withClientConfiguration(clientConfiguration);
@@ -82,7 +82,7 @@ public class S3ClientIAMOptimizedImpl implements S3Client {
                     = new StaticEncryptionMaterialsProvider(configuration.getEncryptionMaterials());
             encClientBuilder = AmazonS3EncryptionClientBuilder.standard().withClientConfiguration(clientConfiguration)
                     .withEncryptionMaterials(encryptionMaterialsProvider)
-                    .withCredentials(new InstanceProfileCredentialsProvider(false));
+                    .withCredentials(new DefaultAWSCredentialsProviderChain());
         }
 
         if (!configuration.isUseEncryption()) {
